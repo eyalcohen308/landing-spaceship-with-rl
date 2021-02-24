@@ -71,7 +71,7 @@ def main():
 
     experiment_configs = {
         'num_runs':1,
-        'num_episodes':100,
+        'num_episodes':700,
         'timeout': 1000
     }
     device = 'cuda:0'

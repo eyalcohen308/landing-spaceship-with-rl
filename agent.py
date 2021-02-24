@@ -37,6 +37,7 @@ class Agent():
         q_values = self.model(state)
 
         probs = softmax(q_values.data, self.tau)
+        #TODO: Categorical(probs).sample().item()
         probs = probs.cpu().numpy()
         probs /= probs.sum()
 
