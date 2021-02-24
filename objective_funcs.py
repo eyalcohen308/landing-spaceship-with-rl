@@ -4,7 +4,7 @@ from torch import nn
 from torch.autograd import Variable
 
 mse = nn.MSELoss()
-def actor_critic(batch, model, current_model, discount, tau):
+def dqn(batch, model, current_model, discount, tau):
     
     states, actions, terminals, rewards, next_states = batch
     

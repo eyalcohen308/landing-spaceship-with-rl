@@ -1,5 +1,5 @@
 
-from modeling import MLP
+from modeling import CategoricalMLP
 import torch
 from torch import nn
 from expirience import ExperienceBuffer
@@ -27,26 +27,15 @@ agent_configs = {
 
 class Agent():
 
-    def __init__(self, agent_config, device='cpu'):
+    def __init__(self, agent_config):
         #TODO: change init_agent to __init__ every place we use init_agent.
         self.config = agent_config
-        self.device = torch.device(device)
         self.init(self.config['seed'])
-
-    def policy(self, state):
-        q_values = self.model(state)
-
-        probs = softmax(q_values.data, self.tau)
-        #TODO: Categorical(probs).sample().item()
-        probs = probs.cpu().numpy()
-        probs /= probs.sum()
-
-        action = self.rand_generator.choice(self.n_actions, 1, p = probs.squeeze())
-        
-        return action
     
     def init(self, seed):
-        self.model = MLP(**self.config['model_args']).to(self.device)
+        self.device = torch.device(self.config['device'])
+        self.model = self.config['model'].to(self.device)
+        self.actions = self.config['actions']
         self.buffer = ExperienceBuffer(self.config['batch_size'],
                             self.config['buffer_size'],
                             seed)
@@ -61,6 +50,8 @@ class Agent():
         self.num_replay = self.config['num_replay_updates']
         self.n_actions = self.config['model_args']['n_actions']
 
+        assert self.n_actions == len(self.actions)
+        
         self.rand_generator = np.random.RandomState(seed)
         self.objective_func = self.config['objective_func']
         
@@ -80,17 +71,12 @@ class Agent():
         action = self.policy(state)
         
         self.last_state = state
-        self.last_action = int(action)
+        self.last_action = action
         
-        return self.last_action
+        return self.actions[action]
     
-    # def sample_batch(self):
-    #     batch = self.buffer.sample()
-        
-    #     # batch = [torch.tensor(instance, device=self.device) for instance in zip(*batch)]
-    #     # batch = [torch.tensor(instance, device=self.device) for instance in map(list, zip(*batch))]
-    #     batch = [instance for instance in map(list, zip(*batch))]
-    #     return batch
+    def policy(self, state):
+        return self.model.policy(state, self.tau)
 
     def replay_learn(self):
         current_model = deepcopy(self.model)
@@ -118,9 +104,9 @@ class Agent():
             self.replay_learn()
                 
         self.last_state = state
-        self.last_action = int(action)
+        self.last_action = action
         
-        return self.last_action
+        return self.actions[action]
     
     def end(self, reward):
         #TODO: change agent_start to start
@@ -137,6 +123,10 @@ class Agent():
         ### Save the model at each episode
         
         # torch.save(self.model, 'new_results/current_nodel.pth')
+    def load_model(self, check_point):
+        self.model, checkpoint = self.model.load_model(check_point)
+        self.model = self.model.to(self.device)
+        return checkpoint
 
     def agent_message(self, message):
         if message == 'get_sum_reward':

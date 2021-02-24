@@ -8,10 +8,11 @@ class LunarLanderEnvironment():
         self.reward = None
         self.state = None
         self.is_terminal = None
+        self.n_states = 8
         self.init()
 
     def init(self):
-        self.env = gym.make("LunarLander-v2")
+        self.env = gym.make("LunarLanderContinuous-v2")
         self.env.seed(0)
 
     def start(self):   

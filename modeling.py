@@ -1,33 +1,44 @@
+import torch
 from torch import nn
+from torch.distributions import Categorical
+from utils import softmax
 
-# class OLD_MLP(nn.Module):
-    
-#     def __init__(self, network_arch):
-        
-#         super().__init__()
-#         self.num_states = network_arch['num_states']
-#         self.hidden_units = network_arch['num_hidden_units']
-#         self.num_actions = network_arch['num_actions']
-        
-#         # The hidden layer
-#         self.fc1 = nn.Linear(in_features = self.num_states, out_features = self.hidden_units)
-        
-#         # The output layer
-#         self.fc2 = nn.Linear(in_features = self.hidden_units, out_features = self.num_actions)
-        
-#     def forward(self, x):
-        
-#         x = F.relu(self.fc1(x))
-        
-#         # No activation func, output should be a tensor(batch, num_actions)
-#         out = self.fc2(x)
-        
-#         return out
 
-class MLP(nn.Sequential):
-    def __init__(self, n_states, n_hidden, n_actions):    
+class CategoricalMLP(nn.Sequential):
+    def __init__(self, n_states, n_hidden, n_actions, n_layers=2):    
         super().__init__(
             nn.Linear(n_states, n_hidden),
             nn.ReLU(),
+            *sum(([nn.Linear(n_hidden, n_hidden), nn.ReLU()] for _ in range(n_layers - 2)), []),
             nn.Linear(n_hidden, n_actions)
         )
+        self.args = {
+            'n_states': n_states,
+            'n_hidden': n_hidden,
+            'n_actions': n_actions,
+            'n_layers': n_layers
+        }
+
+    def policy(self, state, tau):
+        q_values = self(state)
+
+        probs = softmax(q_values.data, tau)
+        #TODO: Categorical(probs).sample().item()
+        # probs = probs.cpu().numpy()
+        probs /= probs.sum()
+
+        action = Categorical(probs).sample().item()
+        
+        return action
+
+    @staticmethod
+    def load_model(path):
+        checkpoint = torch.load(path)
+        model = CategoricalMLP(**checkpoint['args'])
+        model.load_state_dict(checkpoint['model_state_dict'])
+        return model, checkpoint
+
+    def save_model(self, path, **kwargs):
+        kwargs['model_state_dict'] = self.state_dict()
+        kwargs['args'] = self.args
+        torch.save(kwargs, path)
