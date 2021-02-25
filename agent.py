@@ -78,6 +78,9 @@ class Agent():
     def policy(self, state):
         return self.model.policy(state, self.tau)
 
+    def get_action_vals(self, action):
+        return self.actions[action]
+    
     def replay_learn(self):
         current_model = deepcopy(self.model)
         
