@@ -78,7 +78,8 @@ class Agent():
     def policy(self, state):
         return self.model.policy(state, self.tau)
 
-    def get_action_vals(self, action):
+    def get_action_val_by_state(self, state):
+        action = self.policy(state)
         return self.actions[action]
     
     def replay_learn(self):
