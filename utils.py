@@ -19,9 +19,15 @@ def softmax(action_values, tau=1.0):
     return probs
 
 
-def quantize_actions_list():
-    main_engine = [-1,0.25,0.5, 0.75,1]
-    right_and_left_engine = [0, -1, -0.75, 0.75, 1]
+def quantize_actions_list(minimize=False):
+    if not minimize:
+        main_engine = [-1,0.25,0.5, 0.75,1]
+        right_and_left_engine = [0, -1, -0.75, 0.75, 1]
+
+    else:
+        main_engine = [-1,1]
+        right_and_left_engine = [-1,-0.75,0,0.75,1]
+    
     actions = itertools.product(main_engine, right_and_left_engine)
     actions = [np.array(action, dtype=np.float32) for action in actions]
     return actions
