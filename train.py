@@ -2,15 +2,12 @@
 from glue import RLGlue
 import numpy as np
 from tqdm.auto import tqdm
-import torch
 from agent import Agent
 from environment import LunarLanderEnvironment
 from objective_funcs import dqn
 import os
 from modeling import CategoricalMLP
 import argparse
-import sys
-import itertools
 from utils import quantize_actions_list
 import pandas as pd
 
@@ -50,7 +47,7 @@ def train(environment, agent, args):
             if reward > max_reward:
                 os.remove(max_path) if os.path.exists(max_path) else None
 
-                max_path = os.path.join(save_path, f'best_model_run{run}_reward{reward}.pth')
+                max_path = os.path.join(save_path, f'best_model_r{run}_e{episode+1}_reward{int(reward)}.pth')
                 glue.agent.model.save_model(max_path, episode=episode)
                 max_reward = reward
 
