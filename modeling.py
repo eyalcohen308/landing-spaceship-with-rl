@@ -32,10 +32,11 @@ class CategoricalMLP(nn.Sequential):
         return action
 
     @staticmethod
-    def load_model(path):
+    def load_model(path, device='cpu'):
         checkpoint = torch.load(path)
         model = CategoricalMLP(**checkpoint['args'])
-        model.load_state_dict(checkpoint['model_state_dict'])
+        device = torch.device(device)
+        model.load_state_dict(checkpoint['model_state_dict']).to(device)
         return model, checkpoint
 
     def save_model(self, path, **kwargs):
