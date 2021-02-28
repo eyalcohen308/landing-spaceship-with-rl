@@ -33,10 +33,9 @@ class CategoricalMLP(nn.Sequential):
 
     @staticmethod
     def load_model(path, device='cpu'):
-        checkpoint = torch.load(path)
+        checkpoint = torch.load(path, map_location=torch.device(device))
         model = CategoricalMLP(**checkpoint['args'])
-        device = torch.device(device)
-        model.load_state_dict(checkpoint['model_state_dict']).to(device)
+        model.load_state_dict(checkpoint['model_state_dict'])
         return model, checkpoint
 
     def save_model(self, path, **kwargs):
