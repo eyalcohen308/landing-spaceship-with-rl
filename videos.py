@@ -46,18 +46,20 @@ def create_video(model_path):
     model, _ = CategoricalMLP.load_model(model_path)
 
     agent_configs = {
-            'model': model,
-            'device': 'cpu',
-            'batch_size': 100,
-            'buffer_size': 50000,
-            'gamma': 0.99,
-            'lr': 1e-5,
-            'tau':0.01 ,
-            'seed':0,
-            'num_replay_updates':5,
-            'objective_func': dqn,
-            'actions': actions
-        }
+                'model': model,
+                'device': 'cpu',
+                'batch_size': None,
+                'buffer_size': None,
+                'gamma': None,
+                'lr': 1e-5,
+                'tau':0.01 ,
+                'seed':0,
+                'num_replay_updates':None,
+                'objective_func': None,
+                'actions': actions,
+                'priority': False,
+                'no_experience': True
+            }
 
     agent = Agent(agent_configs)
     env = gym.make("LunarLanderContinuous-v2")
