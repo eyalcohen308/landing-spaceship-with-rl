@@ -42,7 +42,7 @@ def create_video(model_path):
 
     actions = quantize_actions_list()
 
-    model_path = '/content/landing-spaceship-with-rl/outputs/dqn_lr5_h1024/last_model_e1000_run2_reward288.7133085145376.pth'
+    # model_path = '/content/landing-spaceship-with-rl/outputs/dqn_lr5_h1024/last_model_e1000_run2_reward288.7133085145376.pth'
 
     model, _ = CategoricalMLP.load_model(model_path)
 
