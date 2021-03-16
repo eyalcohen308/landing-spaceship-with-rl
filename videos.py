@@ -38,7 +38,6 @@ from agent import Agent
 
 
 def create_video(model_path):
-    environment = LunarLanderEnvironment()
 
     actions = quantize_actions_list()
 
