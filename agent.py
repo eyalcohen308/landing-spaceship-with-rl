@@ -38,7 +38,8 @@ class Agent():
         self.actions = self.config['actions']
         self.buffer = ExperienceBuffer(self.config['batch_size'],
                             self.config['buffer_size'],
-                            seed)
+                            seed,
+                            priority=self.config['priority'])
         self.optimizer = torch.optim.Adam(self.model.parameters(), 
                                           lr = self.config['lr'], 
                                           betas = [0.99,0.999], 
@@ -48,7 +49,8 @@ class Agent():
         self.discount = self.config['gamma']
         self.tau = self.config['tau']
         self.num_replay = self.config['num_replay_updates']
-        self.n_actions = self.config['model_args']['n_actions']
+        self.n_actions = len(self.config['actions'])
+        self.no_experience= self.config['no_experience']
 
         assert self.n_actions == len(self.actions)
         
@@ -86,11 +88,16 @@ class Agent():
         current_model = deepcopy(self.model)
         
         for i in range(self.num_replay):
-            batch = self.buffer.sample()
+            batch, indices, weights = self.buffer.sample()
             batch = [ten.to(self.device) for ten in batch]
             self.optimizer.zero_grad()
             loss = self.objective_func(batch, self.model, current_model, self.discount, self.tau)
-            loss.backward()
+
+            if self.buffer.priority:
+                self.buffer.priorities[indices] = loss.sqrt().cpu().detach().numpy()
+                loss = loss * torch.tensor(weights).to(self.device)
+
+            loss.mean().backward()
             self.optimizer.step()
 
     def step(self, reward, state):
@@ -113,8 +120,10 @@ class Agent():
         return self.actions[action]
     
     def end(self, reward):
-        #TODO: change agent_start to start
-        self.episode_steps += 1
+        if self.no_experience:
+            self.episode_steps = self.episode_steps + 1
+        else:
+            self.episode_steps += 1
         self.sum_rewards += reward
 
         state = torch.zeros_like(self.last_state)

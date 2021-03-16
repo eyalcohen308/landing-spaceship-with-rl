@@ -2,7 +2,12 @@ import torch
 import os
 import itertools
 import numpy as np
+import pandas as pd
 
+
+def create_dir_if_not_exsits(save_path):
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
 
 def softmax(action_values, tau=1.0):
     max_action_value = torch.max(action_values, axis = 1, keepdim = True)[0]/tau
@@ -31,3 +36,7 @@ def quantize_actions_list(minimize=False):
     actions = itertools.product(main_engine, right_and_left_engine)
     actions = [np.array(action, dtype=np.float32) for action in actions]
     return actions
+
+def save_rewords_plot(save_path, rewards):
+    path = os.path.join(save_path, f'plot_rewards.jpg')
+    pd.DataFrame(rewards).T.plot.line().figure.savefig(path)
