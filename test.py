@@ -53,7 +53,8 @@ def test(config):
             'num_replay_updates':None,
             'objective_func': None,
             'actions': actions,
-            'priority': args.priority
+            'priority': args.priority,
+            'no_experience': args.no_experience
         }
 
     agent = Agent(agent_configs)
