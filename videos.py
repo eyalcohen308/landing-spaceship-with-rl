@@ -6,7 +6,6 @@ from tqdm.auto import tqdm
 import numpy as np
 
 import matplotlib.pyplot as plt
-%matplotlib inline
 
 # Model import
 from modeling import CategoricalMLP
@@ -28,9 +27,6 @@ display.start()
 
 # This code creates a virtual display to draw game images on. 
 # If you are running locally, just ignore it
-if type(os.environ.get("DISPLAY")) is not str or len(os.environ.get("DISPLAY"))==0:
-    !bash ../xvfb start
-    %env DISPLAY=:1
 
 # other packages:
 from environment import LunarLanderEnvironment
