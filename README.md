@@ -1,23 +1,9 @@
-# Reinforcement-Learning-Pytorch
-Reinforcement Learning Algorithms with Pytorch and OpenAI's Gym.
+# Landing Spaceships With Reinforcment Learning
 
-## 1. Lunar Lander with Deep Q-Learning and Experience Replay
+@EyalCohen @ElronBandel
 
-This project implements the [LunarLander-v2](https://gym.openai.com/envs/LunarLander-v2/) from OpenAI's Gym with Pytorch. The goal is to land the lander safely in the landing pad with the Deep Q-Learning algorithm.
+In this work we apply many Deep Reinforcement Learning Algorithms for the OpenAI's Lunar Lander challenge. We found that Double Deep Q-Learning was most effective. Together with Experience Replay our model converged in less than 100 episodes and managed to solve the environment - achieving more than 282 points on average. We tested our agent with different algorithmic options and in noisy observation space. This work contains the results and evaluations of the different approaches for the problem.
 
-### Introduction
+You can read the full report [here](https://github.com/eyalcohen308/landing-spaceship-with-rl/blob/master/report.pdf). 
 
-Landing pad is always at coordinates `(0,0)`. Coordinates are the first two numbers in state vector. Reward for moving from the top of the screen to landing pad and zero speed is about `100..140` points. If lander moves away from landing pad it loses reward back. Episode finishes if the lander crashes or comes to rest, receiving additional `-100` or `+100` points. Each leg ground contact is `+10`. Firing main engine is `-0.3` points each frame. Solved is `200` points. Landing outside landing pad is possible. Fuel is infinite, so an agent can learn to fly and then land on its first attempt. Four discrete actions available: do nothing, fire left orientation engine, fire main engine, fire right orientation engine.
-
-Check out this [notebook](Lunar-Lander/LunarLander-Pytorch.ipynb).
-
-### Results
-
-Episode 1|Episode 700|Episode 800|
-:-------------------------:|:---------:|:-------:
-<img src="Lunar-Lander/Demo/episode-0.gif" width = 250px>|  <img src="Lunar-Lander/Demo/episode-700.gif" width = 250px>|<img src="Lunar-Lander/Demo/episode-800.gif" width = 250px>|
-
-### Acknowledgement
-
-- The lunar lander environment set up comes from [OpenAI' Gym](https://gym.openai.com/).
-- The `rl_glue` set up and the idea of experimence replay come from the [Reinforcement Learning Specialization from Coursera](https://www.coursera.org/specializations/reinforcement-learning).
+You can see an example of how to run our code [here](https://colab.research.google.com/drive/1eUtOnqCAFW5mQxwmSZCqezm6Ufp-LsvM#scrollTo=KuI7g8Mxm7uO). 
