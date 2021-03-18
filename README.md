@@ -1,6 +1,6 @@
 # Landing Spaceships With Reinforcment Learning
 
-@EyalCohen @ElronBandel
+@[EyalCohen](https://github.com/eyalcohen308)  @[ElronBandel](https://github.com/elronbandel) 
 
 In this work we apply many Deep Reinforcement Learning Algorithms for the OpenAI's Lunar Lander challenge. We found that Double Deep Q-Learning was most effective. Together with Experience Replay our model converged in less than 100 episodes and managed to solve the environment - achieving more than 282 points on average. We tested our agent with different algorithmic options and in noisy observation space. This work contains the results and evaluations of the different approaches for the problem.
 
